@@ -1,14 +1,19 @@
-import type { MetadataRoute } from "next";
-
-const BASE_URL = "https://stratumstudio.dev";
+import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    {
-      url: BASE_URL,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
+    { 
+      url: 'https://stratum-studio.vercel.app', 
+      lastModified: new Date(), 
+      priority: 1 
     },
+    { 
+      url: 'https://stratum-studio.vercel.app/#features', 
+      priority: 0.8 
+    },
+    { 
+      url: 'https://stratum-studio.vercel.app/#download', 
+      priority: 0.9 
+    }
   ];
 }

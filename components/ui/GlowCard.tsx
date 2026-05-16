@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, memo } from "react";
 import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 
@@ -12,7 +12,7 @@ interface GlowCardProps {
   className?: string;
 }
 
-export default function GlowCard({ icon: Icon, title, description, index, className = "" }: GlowCardProps) {
+const GlowCard = memo(function GlowCard({ icon: Icon, title, description, index, className = "" }: GlowCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -74,4 +74,6 @@ export default function GlowCard({ icon: Icon, title, description, index, classN
       <div className="pointer-events-none absolute -bottom-20 -right-20 h-40 w-40 rounded-full bg-[#3B82F6]/[0.02] blur-3xl transition-all duration-700 group-hover:bg-[#3B82F6]/[0.06]" />
     </motion.div>
   );
-}
+});
+
+export default GlowCard;

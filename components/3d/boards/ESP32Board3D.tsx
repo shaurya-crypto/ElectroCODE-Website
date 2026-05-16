@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
 
 const PIN_GEO = new THREE.CylinderGeometry(0.012, 0.012, 0.14, 6);
 const LED_GEO = new THREE.SphereGeometry(0.02, 8, 8);
 
-export default function ESP32Board3D() {
+const ESP32Board3D = memo(function ESP32Board3D() {
   const tex = useTexture("/boards/esp32.png");
   tex.flipY = false;
 
@@ -108,4 +108,6 @@ export default function ESP32Board3D() {
       </mesh>
     </group>
   );
-}
+});
+
+export default ESP32Board3D;

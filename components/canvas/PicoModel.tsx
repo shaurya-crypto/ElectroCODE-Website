@@ -111,7 +111,7 @@ export default function PicoModel(props: ThreeElements["group"]) {
       {/* Hover ring */}
       {hov && (
         <mesh rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[1.4, 0.02, 16, 64]} />
+          <torusGeometry args={[1.4, 0.02, 16, 16]} />
           <meshBasicMaterial color="#22C55E" transparent opacity={0.5} side={THREE.DoubleSide} />
         </mesh>
       )}

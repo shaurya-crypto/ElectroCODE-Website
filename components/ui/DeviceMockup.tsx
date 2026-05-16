@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 function CodeEditorMockup({ mobile = false }: { mobile?: boolean }) {
@@ -80,7 +80,7 @@ function CodeEditorMockup({ mobile = false }: { mobile?: boolean }) {
   );
 }
 
-function PhoneMockup() {
+const PhoneMockup = memo(function PhoneMockup() {
   return (
     <div className="w-[200px] rounded-[28px] border-2 border-white/[0.08] bg-[#050508] p-2 shadow-2xl">
       {/* Notch */}
@@ -92,9 +92,9 @@ function PhoneMockup() {
       <div className="mx-auto mt-2 h-1 w-16 rounded-full bg-white/20" />
     </div>
   );
-}
+});
 
-function LaptopMockup() {
+const LaptopMockup = memo(function LaptopMockup() {
   return (
     <div className="w-full max-w-[600px]">
       {/* Screen */}
@@ -106,7 +106,7 @@ function LaptopMockup() {
       <div className="mx-auto h-1 w-[60%] rounded-b-lg bg-white/[0.04]" />
     </div>
   );
-}
+});
 
 export default function DeviceMockup() {
   const ref = useRef<HTMLDivElement>(null);

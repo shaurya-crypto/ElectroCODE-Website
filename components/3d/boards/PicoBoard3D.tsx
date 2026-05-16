@@ -1,13 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
 
 const PIN_GEO = new THREE.CylinderGeometry(0.012, 0.012, 0.14, 6);
 const LED_GEO = new THREE.SphereGeometry(0.02, 8, 8);
 
-export default function PicoBoard3D() {
+const PicoBoard3D = memo(function PicoBoard3D() {
   const tex = useTexture("/boards/pico.png");
   tex.flipY = false;
 
@@ -98,4 +98,6 @@ export default function PicoBoard3D() {
       </group>
     </group>
   );
-}
+});
+
+export default PicoBoard3D;

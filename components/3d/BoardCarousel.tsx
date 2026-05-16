@@ -1,11 +1,9 @@
 "use client";
 
 import { useRef, useEffect, useMemo, Suspense, useState, lazy } from "react";
-import { Canvas, useFrame, useThree, invalidate } from "@react-three/fiber";
-import { Float, ContactShadows, AdaptiveDpr, AdaptiveEvents, Preload, Environment } from "@react-three/drei";
-import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
+import { Canvas, useFrame, invalidate } from "@react-three/fiber";
+import { ContactShadows, AdaptiveDpr, AdaptiveEvents } from "@react-three/drei";
 import * as THREE from "three";
-import gsap from "gsap";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCarouselLogic, BOARDS } from "@/hooks/useCarouselLogic";
 
@@ -27,7 +25,7 @@ const PicoBoard3D = lazy(() => import("./boards/PicoBoard3D"));
 const ESP32Board3D = lazy(() => import("./boards/ESP32Board3D"));
 const STM32Board3D = lazy(() => import("./boards/STM32Board3D"));
 
-const BOARD_COMPONENTS: Record<string, React.LazyExoticComponent<() => React.JSX.Element>> = {
+const BOARD_COMPONENTS: Record<string, React.LazyExoticComponent<any>> = {
   arduino: ArduinoBoard3D,
   pico: PicoBoard3D,
   esp32: ESP32Board3D,
@@ -88,7 +86,6 @@ function BoardSlot({
     [isMobile]
   );
 
-  // Determine slot index
   const getSlot = () => {
     const count = BOARDS.length;
     if (index === activeIndex) return 1;
@@ -97,13 +94,27 @@ function BoardSlot({
     return 3;
   };
 
-  useEffect(() => {
+  useFrame(() => {
     if (!group.current) return;
     const pos = positions[getSlot()];
-    gsap.to(group.current.position, { x: pos.x, z: pos.z, duration: 1.4, ease: "power3.inOut", onUpdate: invalidate });
-    gsap.to(group.current.scale, { x: pos.scale, y: pos.scale, z: pos.scale, duration: 1.4, ease: "power3.inOut", onUpdate: invalidate });
-    gsap.to(group.current.rotation, { y: pos.rotY, duration: 1.4, ease: "power3.inOut", onUpdate: invalidate });
-  }, [activeIndex]);
+    
+    // Lerp position, scale, and rotation
+    group.current.position.x = THREE.MathUtils.lerp(group.current.position.x, pos.x, 0.08);
+    group.current.position.z = THREE.MathUtils.lerp(group.current.position.z, pos.z, 0.08);
+    
+    const currScale = group.current.scale.x;
+    const newScale = THREE.MathUtils.lerp(currScale, pos.scale, 0.08);
+    group.current.scale.setScalar(newScale);
+    
+    group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, pos.rotY, 0.08);
+    
+    // Float effect for center item
+    if (isCenter) {
+      group.current.position.y = Math.sin(Date.now() * 0.002) * 0.15;
+    } else {
+      group.current.position.y = THREE.MathUtils.lerp(group.current.position.y, 0, 0.08);
+    }
+  });
 
   // Initial position
   useEffect(() => {
@@ -132,13 +143,7 @@ function BoardSlot({
 
   return (
     <group ref={group}>
-      {isCenter ? (
-        <Float speed={1.2} rotationIntensity={0.08} floatIntensity={0.15}>
-          {boardContent}
-        </Float>
-      ) : (
-        boardContent
-      )}
+      {boardContent}
     </group>
   );
 }
@@ -209,17 +214,11 @@ function CarouselScene({ activeIndex, isMobile }: { activeIndex: number; isMobil
         scale={12}
         blur={2.5}
         far={4}
-        resolution={isMobile ? 128 : 256}
+        resolution={128}
       />
-
-      <EffectComposer multisampling={isMobile ? 0 : 2}>
-        <Bloom intensity={isMobile ? 0.3 : 0.5} luminanceThreshold={0.5} luminanceSmoothing={0.9} mipmapBlur={!isMobile} />
-        <Vignette offset={0.3} darkness={0.4} eskil={false} />
-      </EffectComposer>
 
       <AdaptiveDpr pixelated />
       <AdaptiveEvents />
-      <Preload all />
     </>
   );
 }
@@ -336,16 +335,16 @@ export default function BoardCarousel() {
     <div className="relative h-[80vh] w-full">
       <Canvas
         camera={{ position: [0, 3, 7], fov: isMobile ? 55 : 42 }}
-        dpr={[1, 1.5]}
+        dpr={[1, 1]}
         gl={{
-          antialias: !isMobile,
-          powerPreference: isMobile ? "default" : "high-performance",
+          antialias: false,
+          powerPreference: "high-performance",
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.8,
           outputColorSpace: THREE.SRGBColorSpace,
         }}
-        frameloop="demand"
-        performance={{ min: 0.5 }}
+        frameloop="always"
+        performance={{ min: 0.1 }}
       >
         <color attach="background" args={["#030306"]} />
         <fog attach="fog" args={["#030306", 12, 28]} />

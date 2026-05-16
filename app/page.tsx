@@ -102,11 +102,28 @@ function XIcon({ className }: { className?: string }) {
 
 export default function HomePage() {
   const heroRef = React.useRef<HTMLElement>(null);
+  const [show3D, setShow3D] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShow3D(true), 150);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
-      <Navbar />
       <SmoothScrollProvider>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Stratum Studio",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "description": "AI-powered mobile IDE for embedded development",
+        "screenshot": "https://stratum-studio.vercel.app/screenshot.png"
+      }) }} />
+      <h1 className="sr-only">Stratum Studio - Mobile IDE with AI Agent</h1>
+      <Navbar />
 
       {/* ====== SECTION 1: HERO ====== */}
       <section ref={heroRef} className="relative h-screen overflow-hidden premium-bg">
@@ -119,7 +136,7 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-gradient-to-b from-[#030306] via-[#060818] to-[#030306]" />
           }
         >
-          <HeroCanvas />
+          {show3D && <HeroCanvas />}
         </Suspense>
 
         <BackgroundBeams />
@@ -142,8 +159,9 @@ export default function HomePage() {
             </motion.div> */}
 
             {/* Title — character by character */}
-            <h1
+            <div
               className="font-mono text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl"
+              aria-hidden="true"
               style={{ animation: "breathe-glow 3s ease-in-out infinite" }}
             >
               {TITLE_PARTS.map((part) =>
@@ -168,7 +186,7 @@ export default function HomePage() {
                   </motion.span>
                 ))
               )}
-            </h1>
+            </div>
 
             {/* Subtitle — word by word */}
             <motion.p
@@ -255,12 +273,12 @@ export default function HomePage() {
             >
               Hardware
             </motion.span>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">Hardware <span className="bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] bg-clip-text text-transparent">Showcase</span></h2>
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">Supported <span className="bg-gradient-to-r from-[#3B82F6] to-[#06B6D4] bg-clip-text text-transparent">Boards</span></h2>
             <p className="mx-auto mt-4 max-w-lg text-white/35">Four boards. One IDE. Explore the hardware that Stratum Studio supports out of the box.</p>
           </motion.div>
         </div>
         <Suspense fallback={<div className="h-[90vh] bg-[#030306]" />}>
-          <BoardCarousel />
+          {show3D && <BoardCarousel />}
         </Suspense>
       </section>
 
@@ -291,7 +309,7 @@ export default function HomePage() {
               Features
             </motion.span>
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Built for{" "}
+              Features: Built for{" "}
               <span className="bg-gradient-to-r from-[#3B82F6] to-[#8B5CF6] bg-clip-text text-transparent">hardware engineers</span>
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-white/35">
@@ -342,7 +360,7 @@ export default function HomePage() {
             transition={{ duration: 0.8, ease: EASE }}
           >
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              Start Building. <span className="text-white/30">No account needed.</span>
+              Download Now. <span className="text-white/30">No account needed.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-md text-white/35">
               Download Stratum Studio and start coding for your hardware in under 60 seconds.
@@ -393,7 +411,7 @@ export default function HomePage() {
         </div>
       </footer>
 
-      </SmoothScrollProvider>
+    </SmoothScrollProvider >
     </>
   );
 }

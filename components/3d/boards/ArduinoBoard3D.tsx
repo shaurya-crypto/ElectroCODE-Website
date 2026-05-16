@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import * as THREE from "three";
 import { useTexture, Decal } from "@react-three/drei";
 
@@ -8,7 +8,7 @@ const PIN_GEO = new THREE.CylinderGeometry(0.015, 0.015, 0.16, 6);
 const LED_GEO = new THREE.SphereGeometry(0.025, 8, 8);
 const CAP_GEO = new THREE.CylinderGeometry(0.04, 0.04, 0.08, 8);
 
-export default function ArduinoBoard3D() {
+const ArduinoBoard3D = memo(function ArduinoBoard3D() {
   const tex = useTexture("/boards/arduino.png");
   tex.flipY = false;
 
@@ -127,4 +127,6 @@ export default function ArduinoBoard3D() {
       </mesh>
     </group>
   );
-}
+});
+
+export default ArduinoBoard3D;
